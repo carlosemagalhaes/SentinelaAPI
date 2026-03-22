@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="SentinelaAPI.Api/SentinelaAPI.Api.csproj" />
+  <Project Path="SentinelaAPI.Application/SentinelaAPI.Application.csproj" />
+  <Project Path="SentinelaAPI.Domain/SentinelaAPI.Domain.csproj" />
+  <Project Path="SentinelaAPI.Infrastructure/SentinelaAPI.Infrastructure.csproj" />
+</Solution>
