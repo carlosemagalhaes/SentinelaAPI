@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using SentinelaAPI.Application.Interfaces;
+using SentinelaAPI.Application.Services;
 using SentinelaAPI.Domain.Interfaces;
 using SentinelaAPI.Infrastructure.Data;
 using SentinelaAPI.Infrastructure.Repositories;
@@ -14,6 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
+builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 
 var app = builder.Build();
 
