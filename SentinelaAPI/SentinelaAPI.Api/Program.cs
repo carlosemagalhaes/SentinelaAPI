@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SentinelaAPI.Api.Middleware;
 using SentinelaAPI.Application.Interfaces;
 using SentinelaAPI.Application.Services;
 using SentinelaAPI.Domain.Interfaces;
@@ -27,6 +28,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+app.UseMiddleware<AuditMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
