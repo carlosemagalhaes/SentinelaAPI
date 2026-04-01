@@ -18,6 +18,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
+builder.Services.AddScoped<IAnomalyAlertRepository, AnomalyAlertRepository>();
+builder.Services.AddScoped<IAnomalyDetectionService, AnomalyDetectionService>();
 
 var app = builder.Build();
 

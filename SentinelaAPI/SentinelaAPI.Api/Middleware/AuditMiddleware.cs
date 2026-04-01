@@ -15,7 +15,10 @@ public class AuditMiddleware
         _logger = logger;
     }
 
-    public async Task InvokeAsync(HttpContext context, IAuditLogService auditLogService)
+    public async Task InvokeAsync(
+        HttpContext context,
+        IAuditLogService auditLogService,
+        IAnomalyDetectionService anomalyDetectionService)
     {
         var path = context.Request.Path.Value ?? "/";
         var skipPaths = new[] { "/swagger", "/favicon.ico", "/health" };
@@ -36,10 +39,11 @@ public class AuditMiddleware
             var statusCode = context.Response.StatusCode;
 
             await auditLogService.LogAsync(action, path, userId, ipAddress, statusCode);
+            await anomalyDetectionService.DetectAndAlertAsync(ipAddress, userId, statusCode);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Failed to save audit log for {Path}", path);
+            _logger.LogError(ex, "Failed to process audit log for {Path}", path);
         }
     }
 
