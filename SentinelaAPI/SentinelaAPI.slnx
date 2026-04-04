@@ -3,4 +3,5 @@
   <Project Path="SentinelaAPI.Application/SentinelaAPI.Application.csproj" />
   <Project Path="SentinelaAPI.Domain/SentinelaAPI.Domain.csproj" />
   <Project Path="SentinelaAPI.Infrastructure/SentinelaAPI.Infrastructure.csproj" />
+  <Project Path="SentinelaAPI.Tests/SentinelaAPI.Tests.csproj" Id="152eb6fa-9b5d-4ae1-8898-d6762e08c074" />
 </Solution>
