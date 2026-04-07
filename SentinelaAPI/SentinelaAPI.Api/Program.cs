@@ -20,6 +20,8 @@ builder.Services.AddScoped<IAuditLogRepository, AuditLogRepository>();
 builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 builder.Services.AddScoped<IAnomalyAlertRepository, AnomalyAlertRepository>();
 builder.Services.AddScoped<IAnomalyDetectionService, AnomalyDetectionService>();
+builder.Services.AddHttpClient<CveMonitorService>();
+builder.Services.AddScoped<ICveMonitorService, CveMonitorService>();
 
 var app = builder.Build();
 
