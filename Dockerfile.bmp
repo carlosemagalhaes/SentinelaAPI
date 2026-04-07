@@ -1,0 +1,21 @@
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+WORKDIR /app
+EXPOSE 8080
+
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+WORKDIR /src
+COPY ["SentinelaAPI/SentinelaAPI.Api/SentinelaAPI.Api.csproj", "SentinelaAPI.Api/"]
+COPY ["SentinelaAPI/SentinelaAPI.Application/SentinelaAPI.Application.csproj", "SentinelaAPI.Application/"]
+COPY ["SentinelaAPI/SentinelaAPI.Domain/SentinelaAPI.Domain.csproj", "SentinelaAPI.Domain/"]
+COPY ["SentinelaAPI/SentinelaAPI.Infrastructure/SentinelaAPI.Infrastructure.csproj", "SentinelaAPI.Infrastructure/"]
+RUN dotnet restore "SentinelaAPI.Api/SentinelaAPI.Api.csproj"
+COPY SentinelaAPI/ .
+RUN dotnet build "SentinelaAPI.Api/SentinelaAPI.Api.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "SentinelaAPI.Api/SentinelaAPI.Api.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "SentinelaAPI.Api.dll"]
