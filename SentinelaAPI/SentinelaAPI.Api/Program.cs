@@ -6,6 +6,7 @@ using SentinelaAPI.Domain.Interfaces;
 using SentinelaAPI.Infrastructure.Data;
 using SentinelaAPI.Infrastructure.Repositories;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
@@ -39,6 +40,13 @@ builder.Services.AddScoped<ICveMonitorService, CveMonitorService>();
 
 var app = builder.Build();
 
+// Apply migrations automatically on startup
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate();
+}
+
 // Enable Swagger in all environments for portfolio visibility
 app.UseSwagger();
 app.UseSwaggerUI(c =>
@@ -50,12 +58,4 @@ app.UseSwaggerUI(c =>
 app.UseMiddleware<AuditMiddleware>();
 app.UseAuthorization();
 app.MapControllers();
-
-// Apply migrations automatically on startup
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.Migrate();
-}
-
 app.Run();
