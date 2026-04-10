@@ -6,9 +6,17 @@ namespace SentinelaAPI.Infrastructure.Data;
 
 public class AppDbContext : DbContext
 {
+    protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseNpgsql();
+        }
+    }
+
     public AppDbContext(DbContextOptions<AppDbContext> options)
         : base(options) { }
-
+    
     public DbSet<AuditLog> AuditLogs { get; set; }
     public DbSet<AnomalyAlert> AnomalyAlerts { get; set; }
 
@@ -56,4 +64,6 @@ public class AppDbContext : DbContext
             entity.HasIndex(e => e.IpAddress);
         });
     }
+
+
 }

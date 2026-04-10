@@ -12,8 +12,8 @@ using SentinelaAPI.Infrastructure.Data;
 namespace SentinelaAPI.Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260331091617_AddAnomalyAlerts")]
-    partial class AddAnomalyAlerts
+    [Migration("20260410003940_InitialPostgres")]
+    partial class InitialPostgres
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
