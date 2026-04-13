@@ -1,5 +1,5 @@
 # 🛡️ SentinelaAPI
-
+ 
 > Audit log, anomaly detection and CVE monitoring system for .NET APIs — built with ASP.NET Core 8, Clean Architecture and Security-by-Design principles.
 
 ## 🌐 Live Demo
