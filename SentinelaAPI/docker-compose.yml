@@ -1,0 +1,90 @@
+name: sentinela
+
+# ============================================================
+# SentinelaAPI — ambiente de desenvolvimento local
+#
+# Sobe dois serviços:
+#   db  — PostgreSQL 16 (mesmo banco usado em produção no Railway)
+#   api — SentinelaAPI buildada a partir do Dockerfile local
+#
+# Como usar:
+#   docker compose up --build        # primeira vez
+#   docker compose up                # próximas vezes (sem rebuild)
+#   docker compose down -v           # para e remove volumes (reseta o banco)
+# ============================================================
+
+services:
+
+  # ----------------------------------------------------------
+  # Banco de dados — PostgreSQL 16
+  # ----------------------------------------------------------
+  db:
+    image: postgres:16-alpine
+    container_name: sentinela-db
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: sentineladb
+      POSTGRES_USER: sentinela
+      # Em produção real use Docker Secrets ou um vault.
+      # Para desenvolvimento local, variável de ambiente é aceitável.
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-sentinela_dev_pass}
+
+    ports:
+      # Expõe na porta 5433 para não conflitar com um PostgreSQL local já instalado.
+      - "5433:5432"
+
+    volumes:
+      # Volume nomeado: o banco sobrevive a `docker compose down` (mas não a `down -v`).
+      - postgres_data:/var/lib/postgresql/data
+
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sentinela -d sentineladb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  # ----------------------------------------------------------
+  # API — SentinelaAPI
+  # ----------------------------------------------------------
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sentinela-api
+    restart: unless-stopped
+
+    environment:
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+
+      # Connection string aponta para o serviço 'db' acima.
+      # O Docker resolve 'db' como hostname automaticamente dentro da rede.
+      ConnectionStrings__DefaultConnection: >-
+        Host=db;Port=5432;Database=sentineladb;
+        Username=sentinela;Password=${DB_PASSWORD:-sentinela_dev_pass};
+        Include Error Detail=true
+
+    ports:
+      - "8080:8080"
+
+    depends_on:
+      db:
+        condition: service_healthy
+
+    # Aplica as migrations do EF Core ao subir a API.
+    # Se preferir rodar migrations manualmente, remova o 'command'.
+    command: >
+      sh -c "
+        dotnet SentinelaAPI.Api.dll &
+        sleep 5 &&
+        dotnet ef database update
+          --project SentinelaAPI.Infrastructure
+          --startup-project SentinelaAPI.Api
+          --no-build
+        wait
+      "
+
+volumes:
+  postgres_data:
+    driver: local

@@ -13,6 +13,7 @@ public class AnomalyAlert
     public DateTime DetectedAt { get; private set; }
     public bool IsResolved { get; private set; }
 
+    
     private AnomalyAlert() { }
 
     public static AnomalyAlert Create(
