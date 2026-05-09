@@ -7,4 +7,5 @@ public class CreateAuditLogDto
     public string? UserId { get; set; }
     public string IpAddress { get; set; } = string.Empty;
     public int StatusCode { get; set; }
+
 }

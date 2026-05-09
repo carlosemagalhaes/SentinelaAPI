@@ -10,7 +10,7 @@ public class AppDbContext : DbContext
     {
         if (!optionsBuilder.IsConfigured)
         {
-            optionsBuilder.UseNpgsql();
+            optionsBuilder.UseSqlite();
         }
     }
 
